@@ -51,25 +51,22 @@ function Board({ xIsNext, squares, onPlay }) {
     onPlay(nextSquares); // updates the old array
   }
 
+  const rows = [];
+  for (let row = 0; row <3; row++) {
+    const cols = [];
+    for (let col = 0; col < 3; col++) {
+      const num = row * 3 + col;
+      cols.push(<Square key={num} value={squares[num]} onSquareClicked={() => handleClick(num)} />)
+      // Arrow function defines a new function. Now handleClick isn't called when rendered
+    }
+    rows.push(<div className="board-row" key={row}>{cols}</div>);
+  }
   return (
     <>
       <div className="status">{status}</div>
       <div className="board-row">
-        <Square value={squares[0]} onSquareClicked={() => handleClick(0)} />{" "}
-        {/* Arrow function defines a function. Now handleClick isn't called when rendered */}
-        <Square value={squares[1]} onSquareClicked={() => handleClick(1)} />
-        <Square value={squares[2]} onSquareClicked={() => handleClick(2)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[3]} onSquareClicked={() => handleClick(3)} />
-        <Square value={squares[4]} onSquareClicked={() => handleClick(4)} />
-        <Square value={squares[5]} onSquareClicked={() => handleClick(5)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[6]} onSquareClicked={() => handleClick(6)} />
-        <Square value={squares[7]} onSquareClicked={() => handleClick(7)} />
-        <Square value={squares[8]} onSquareClicked={() => handleClick(8)} />
-      </div>
+        {rows}
+      </div> 
     </>
   );
 }
@@ -93,14 +90,16 @@ export default function Game() {
 
   const moves = history.map((squares, move) => {
     let description;
-    if (move > 0) {
+    if (move == currentMove) {
+      description = "You are at move #" + move;
+    } else if (move > 0) {
       description = "Go to move #" + move;
     } else {
       description = "Go to game start";
     }
     return (
       <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
+        {move == currentMove ? <p>{description}</p> : <button onClick={() => jumpTo(move)}>{description}</button>}
       </li>
     );
   });
